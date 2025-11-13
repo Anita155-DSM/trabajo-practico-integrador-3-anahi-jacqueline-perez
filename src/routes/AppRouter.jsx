@@ -1,0 +1,27 @@
+// ACA MANEJAMOS TOOODAS LAS RUTAS. E IMPORTAMOS TODAS LAS PAGINAS PORQ MANEJAMOS TODAS LAS PAGINAS
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { PublicRoute } from "./PublicRoute";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+import { PrivateRoute } from "./PrivateRoute";
+import { Home } from "../pages/Home";
+import { Tasks } from "../pages/Tasks";
+import { Profile } from "../pages/Profile";
+
+export const AppRouter = () =>{
+    return(
+        <Routes>
+            <Route element={PublicRoute}>
+                <Route path="login" element={Login}></Route>
+                <Route path="register" element={Register}></Route>
+            </Route>
+            <Route element={PrivateRoute}>
+                <Route path="home" element={Home}></Route>
+                <Route path="task" element={Tasks}></Route>
+                <Route path="profile" element={Profile}></Route>
+            </Route>
+        </Routes>
+    )
+}
+
