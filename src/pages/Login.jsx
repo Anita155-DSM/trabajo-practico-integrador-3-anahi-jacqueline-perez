@@ -1,30 +1,56 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "../hooks/useForm";
+import { Navigate } from "react-router-dom";
+
 
 const Login = () => {
     //desestructuramos lo que viene de useForm para utilizarlo
-    const { fromState, handleSubmit} = useForm({
-        email: "",
+    const { formState, handleSubmit, handleChange } = useForm({
         username: "",
+        email: "",
         password: ""
     })
+    
 
-    return(
+
+    // useEffect(() =>{
+    //     console.log(formState)
+    // })
+
+
+    const handleLogin = (event) => {
+        event.preventDefault()
+
+        Navigate("/home")
+    }
+
+    return (
         <main>
-        <h1>
-            ¡Iniciar sesión!
-        </h1>
-        <div>
-            <form action="">
-                <label htmlFor="username"></label>
-                <input type="text" name="username" value={fromState.username}  />
-                <label htmlFor="password"></label>
-                <input type="text" name="password" value={fromState.password}/>
-            </form>
-            <button onClick={handleSubmit}>Iniciar Sesión</button>
-        </div>
+            <div>
+                <h3>
+                    ¡Iniciar sesión!
+                </h3>
+                <div>
+                    <form onSubmit={handleLogin}>
+                        <div>
+                            <label htmlFor="username">username</label>
+                            <input type="text" name="username" value={formState.username} onChange={handleChange} />
+                        </div>
+                        <div>
+                            <label htmlFor="password">password</label>
+                            <input type="text" name="password" value={formState.password} onChange={handleChange}  />
+                        </div>
+                        <div>
+                            <label htmlFor="email">email</label>
+                            <input type="text" name="email" value={formState.email} onChange={handleChange}  />
+                        </div>
+                    </form>
+                    <button onClick={handleSubmit}>Iniciar Sesión</button>
+                </div>
+            </div >
         </main>
     )
+    
 }
 
 export default Login

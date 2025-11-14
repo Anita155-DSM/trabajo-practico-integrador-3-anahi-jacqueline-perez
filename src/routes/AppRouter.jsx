@@ -12,15 +12,17 @@ import { Profile } from "../pages/Profile";
 export const AppRouter = () =>{
     return(
         <Routes>
-            <Route element={PublicRoute}>
-                <Route path="login" element={Login}></Route>
-                <Route path="register" element={Register}></Route>
-            </Route>
-            <Route element={PrivateRoute}>
-                <Route path="home" element={Home}></Route>
-                <Route path="task" element={Tasks}></Route>
-                <Route path="profile" element={Profile}></Route>
-            </Route>
+            {/* <Route element={PublicRoute}> */}
+                <Route path="/login" element={<Login/>}></Route>
+                <Route path="/register" element={<Register/>}></Route>
+            {/* </Route> */}
+            {/* <Route element={PrivateRoute}> */}
+                <Route path="/home" element={<Home/>}></Route>
+                <Route path="/task" element={<Tasks/>}></Route>
+                <Route path="/profile" element={<Profile/>}></Route>
+            {/* </Route> */}
+            {/* ruta por default */}
+            <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
     )
 }

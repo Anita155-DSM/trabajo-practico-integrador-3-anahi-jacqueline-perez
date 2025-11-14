@@ -10,13 +10,13 @@
 import React, { useState } from "react";
 
 // useForm tiene como parametro inicial: initialState
-export const useForm = (initialState) => {
-    [formState, setFormState] = useState(initialState)
-    // const { username, password } = formState   este np es necesario porq no lo estamos usando ahorita
+export const useForm = (initialState = {}) => {
+    const [formState, setFormState] = useState(initialState)
+    //const { username, password } = formState  // este np es necesario porq no lo estamos usando ahorita
 
     // ● Función para actualizar valores de inputs al escribir
     // VALORES de los inputs {target} viene del objeto event y aca con llaves, tomamos solo target, que es el input sobre el cual estamos escribiendo
-    handleChange = ({target}) => {
+    const handleChange = ({target}) => {
         const {name, value} = target
         // del target vienen name y value(o sea del input)
         
@@ -30,15 +30,15 @@ export const useForm = (initialState) => {
     }
     // ● Función para resetear el formulario a valores iniciales
     //vuelve el formulario al estado inicial (o sea a nada)
-    handleReset = () => {
+    const handleReset = () => {
         //los cambios van al setFormState porq es el que capta los valores cambiantes
         setFormState(initialState)
     }   
     //el handleSubmit recibe un event del formulario. sirve para enviar los datos
-    handleSubmit = (event, onLogin) => {
+    const handleSubmit = (event) => {
         event.preventDefault()
 
-        onLogin(formState)
+        // onLogin(formState)
         //evita que la pagina se recargue
         handleReset()
 
@@ -50,6 +50,7 @@ export const useForm = (initialState) => {
     // ● Retornar el estado actual del formulario y las funciones de manejo
     return {
         ...formState,
+        formState,
         handleChange,
         handleReset,
         handleSubmit
