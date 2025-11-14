@@ -4,6 +4,8 @@ export const Tasks = () =>{
 
 
     return(
-        <h1>tasks</h1>
+        <main>
+            <h1>listar tareas</h1>
+        </main>
     )
 }
