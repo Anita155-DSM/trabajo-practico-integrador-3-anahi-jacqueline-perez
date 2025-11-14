@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "../hooks/useForm";
+import { Link, useNavigate } from "react-router-dom";
 // ○ username
 // ○ email
 // ○ password
@@ -16,13 +17,32 @@ const Register = () => {
         lastName: "",
         dni: ""
     })
+    
+    const navigate = useNavigate()
 
-    const handleRegister = (event) => {
+    // const handleRegister = (event) => {
+    //     event.preventDefault()
+
+
+    //     navigate("/login")
+    // }
+
+    const handleRegister = async (event) => {
         event.preventDefault()
 
-        Navigate("/login")
+        try {
+            const peticion = await fetch("http://localhost:api/register", {
+                method: "POST",       
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body: JSON.stringify
+            })
+        } catch (error) {
+            console.error();
+        }
     }
-
+    
     
     return (
         <main>
@@ -53,12 +73,14 @@ const Register = () => {
                             <label htmlFor="lastName">last name</label>
                             <input type="text" name="lastName" value={formState.lastName} onChange={handleChange}/>
                         </div>
-                        <div>
-                            <label htmlFor="dni">dni</label>
-                            <input type="number" name="dni" value={formState.dni} onChange={handleChange}/>
-                        </div>
-                    </form>
+                        {/* el modelo de user en el backend no tiene dni */}
                     <button onClick={handleSubmit}>Registrate</button>
+                    <span>
+                        <p>Ya tienes una cuenta?</p>
+                        <Link to="/login"/> Inicia Sesión<Link/>
+                        <button>inicia sesion</button>
+                    </span>
+                    </form>
                 </div>
             </div >
         </main>

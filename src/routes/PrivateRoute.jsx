@@ -12,6 +12,6 @@ export const PrivateRoute = () => {
         <Outlet></Outlet>
         </> 
     ) : (
-        <Navigate to={"/home"}></Navigate>
+        <Navigate to={"/login"}></Navigate>
     )
 }

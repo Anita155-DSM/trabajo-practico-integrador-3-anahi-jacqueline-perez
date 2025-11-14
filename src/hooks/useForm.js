@@ -38,6 +38,11 @@ export const useForm = (initialState = {}) => {
     const handleSubmit = (event) => {
         event.preventDefault()
 
+        try {
+            
+        } catch (error) {
+            
+        }
         // onLogin(formState)
         //evita que la pagina se recargue
         handleReset()

@@ -3,6 +3,11 @@ import { useNavigate, Link } from "react-router-dom";
 
 export const Navbar = () => {
     const navigate = useNavigate()
+
+    const isLogged = () =>{ 
+        
+    }
+    
     return (
         <nav>
             <div>
@@ -15,7 +20,7 @@ export const Navbar = () => {
                 <Link to="/tasks">tasks</Link>
             </div>
             <div>
-                <Link to="/home">logout</Link>
+                <Link to="/login">logout</Link>
             </div>
         </nav>
     )
