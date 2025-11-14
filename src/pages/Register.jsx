@@ -8,7 +8,7 @@ import { useForm } from "../hooks/useForm";
 // ○ dni
 const Register = () => {
     //desestructuramos lo que viene de useForm para utilizarlo
-    const { formState, handleSubmit } = useForm({
+    const { formState, handleSubmit, handleChange } = useForm({
         username: "",
         email: "",
         password: "",
@@ -23,6 +23,7 @@ const Register = () => {
         Navigate("/login")
     }
 
+    
     return (
         <main>
             <div>
@@ -33,27 +34,28 @@ const Register = () => {
                     <form onSubmit={handleRegister}>
                         <div>
                             <label htmlFor="username">username</label>
-                            <input type="text" name="username" value={formState.username} />
+                            <input type="text" name="username" value={formState.username} onChange={handleChange}/>
                         </div>
+                
                         <div>
                             <label htmlFor="password">password</label>
-                            <input type="text" name="password" value={formState.password} />
+                            <input type="text" name="password" value={formState.password} onChange={handleChange}/>
                         </div>
                         <div>
                             <label htmlFor="email">email</label>
-                            <input type="text" name="email" value={formState.email} />
+                            <input type="text" name="email" value={formState.email} onChange={handleChange}/>
                         </div>
                         <div>
                             <label htmlFor="firstName">first name</label>
-                            <input type="text" name="firstName" value={formState.firstName} />
+                            <input type="text" name="firstName" value={formState.firstName} onChange={handleChange}/>
                         </div>
                         <div>
                             <label htmlFor="lastName">last name</label>
-                            <input type="text" name="lastName" value={formState.lastName} />
+                            <input type="text" name="lastName" value={formState.lastName} onChange={handleChange}/>
                         </div>
                         <div>
                             <label htmlFor="dni">dni</label>
-                            <input type="number" name="dni" value={formState.dni} />
+                            <input type="number" name="dni" value={formState.dni} onChange={handleChange}/>
                         </div>
                     </form>
                     <button onClick={handleSubmit}>Registrate</button>

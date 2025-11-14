@@ -18,11 +18,11 @@ export const AppRouter = () =>{
             {/* </Route> */}
             {/* <Route element={PrivateRoute}> */}
                 <Route path="/home" element={<Home/>}></Route>
-                <Route path="/task" element={<Tasks/>}></Route>
+                <Route path="/tasks" element={<Tasks/>}></Route>
                 <Route path="/profile" element={<Profile/>}></Route>
             {/* </Route> */}
             {/* ruta por default */}
-            <Route path="*" element={<Navigate to="/home" />} />
+            <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
     )
 }

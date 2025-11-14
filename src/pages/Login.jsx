@@ -7,15 +7,14 @@ const Login = () => {
     //desestructuramos lo que viene de useForm para utilizarlo
     const { formState, handleSubmit, handleChange } = useForm({
         username: "",
-        email: "",
         password: ""
     })
     
 
 
-    // useEffect(() =>{
-    //     console.log(formState)
-    // })
+    useEffect(() =>{
+        console.log(formState)
+    })
 
 
     const handleLogin = (event) => {
@@ -39,10 +38,6 @@ const Login = () => {
                         <div>
                             <label htmlFor="password">password</label>
                             <input type="text" name="password" value={formState.password} onChange={handleChange}  />
-                        </div>
-                        <div>
-                            <label htmlFor="email">email</label>
-                            <input type="text" name="email" value={formState.email} onChange={handleChange}  />
                         </div>
                     </form>
                     <button onClick={handleSubmit}>Iniciar Sesión</button>
