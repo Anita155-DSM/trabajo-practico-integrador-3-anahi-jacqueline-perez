@@ -1,6 +1,6 @@
 // ACA MANEJAMOS TOOODAS LAS RUTAS. E IMPORTAMOS TODAS LAS PAGINAS PORQ MANEJAMOS TODAS LAS PAGINAS
 import React from "react";
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { PublicRoute } from "./PublicRoute";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -14,7 +14,6 @@ import { Navbar } from "../components/navbar";
 import { Footer } from "../components/Footer";
 
 export const AppRouter = () =>{
-    const navigate = useNavigate();
 
     return(
         <>
@@ -39,5 +38,4 @@ export const AppRouter = () =>{
         </>
     )
 }
-    
 

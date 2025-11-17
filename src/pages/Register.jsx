@@ -9,15 +9,16 @@ import { Link, useNavigate } from "react-router-dom";
 // ○ dni
 const Register = () => {
     //desestructuramos lo que viene de useForm para utilizarlo
-    const { formState, handleSubmit, handleChange } = useForm({
+    const { formState, handleChange } = useForm({
         username: "",
         email: "",
         password: "",
-        firstName: "",
-        lastName: "",
-        dni: ""
+        name: "",
+        lastname: "",
+        // dni: ""  np lo uso porq en el modelo de user no tiene dni
     })
-    
+
+
     const navigate = useNavigate()
 
     // const handleRegister = (event) => {
@@ -31,19 +32,32 @@ const Register = () => {
         event.preventDefault()
 
         try {
-            const peticion = await fetch("http://localhost:api/register", {
-                method: "POST",       
+            const peticion = await fetch("http://localhost:3000/api/register", {
+                method: "POST",
                 headers: {
-                    "Content-Type" : "application/json"
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify
+                body: JSON.stringify(formState),
+                credentials: "include"
             })
+
+            
+            if (!formState.username || !formState.email || !formState.password || !formState.name || !formState.lastname) {
+                return alert("no puedes enviar campos vacios")
+            }
+            if (peticion.ok) {
+                console.log("todo okey")
+                console.log(formState)
+                navigate("/login")
+            } else {
+                console.error()
+            }
         } catch (error) {
             console.error();
         }
     }
-    
-    
+
+
     return (
         <main>
             <div>
@@ -54,32 +68,31 @@ const Register = () => {
                     <form onSubmit={handleRegister}>
                         <div>
                             <label htmlFor="username">username</label>
-                            <input type="text" name="username" value={formState.username} onChange={handleChange}/>
+                            <input type="text" name="username" value={formState.username} onChange={handleChange} />
                         </div>
-                
+
                         <div>
                             <label htmlFor="password">password</label>
-                            <input type="text" name="password" value={formState.password} onChange={handleChange}/>
+                            <input type="text" name="password" value={formState.password} onChange={handleChange} />
                         </div>
                         <div>
                             <label htmlFor="email">email</label>
-                            <input type="text" name="email" value={formState.email} onChange={handleChange}/>
+                            <input type="text" name="email" value={formState.email} onChange={handleChange} />
                         </div>
                         <div>
-                            <label htmlFor="firstName">first name</label>
-                            <input type="text" name="firstName" value={formState.firstName} onChange={handleChange}/>
+                            <label htmlFor="name">first name</label>
+                            <input type="text" name="name" value={formState.firstName} onChange={handleChange} />
                         </div>
                         <div>
-                            <label htmlFor="lastName">last name</label>
-                            <input type="text" name="lastName" value={formState.lastName} onChange={handleChange}/>
+                            <label htmlFor="lastname">last name</label>
+                            <input type="text" name="lastname" value={formState.lastName} onChange={handleChange} />
                         </div>
                         {/* el modelo de user en el backend no tiene dni */}
-                    <button onClick={handleSubmit}>Registrate</button>
-                    <span>
-                        <p>Ya tienes una cuenta?</p>
-                        <Link to="/login"/> Inicia Sesión<Link/>
-                        <button>inicia sesion</button>
-                    </span>
+                        <span>
+                            <p>¿ya tienes una cuenta?</p>
+                            <Link to="/login"> Inicia Sesion</Link>
+                        </span>
+                        <button type="submit">Registrate</button>
                     </form>
                 </div>
             </div >

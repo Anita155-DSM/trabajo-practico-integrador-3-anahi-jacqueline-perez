@@ -16,26 +16,29 @@ const Login = () => {
 
     const navigate = useNavigate()
 
+
     const handleLogin = async (event) => {
         event.preventDefault()
 
         try {
-            console.log("peticion")
+
             const peticion = await fetch("http://localhost:3000/api/login", {
-                //SIEMPRE RECORDAR, method, headers, body
+                //SIEMPRE RECORDAR, method, headers, credentials
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                credentials: "include",
                 body: JSON.stringify(formState)
             })
-
-            if (peticion.ok) {
-                navigate("/home")
-            } else {
-
-                alert("Credenciales incorrectas")
+            
+            const data = await peticion.json()
+            if (!peticion.ok) {
+                alert(data.message)
             }
+            alert(data.message)
+            navigate("/home")
+
 
         } catch (error) {
             <p>error en el fetch de login</p>
@@ -53,10 +56,10 @@ const Login = () => {
     return (
         <main>
             <div>
-                <h3>
-                    ¡Iniciar sesión!
-                </h3>
                 <div>
+                    <h3>
+                        ¡Iniciar sesión!
+                    </h3>
                     <form onSubmit={handleLogin}>
                         <div>
                             <label htmlFor="username">username</label>
@@ -68,7 +71,7 @@ const Login = () => {
                         </div>
 
                         <span>
-                            <p>¿ya tienes una cuenta?</p>
+                            <p>¿no tienes una cuenta?</p>
                             <Link to="/register"> Registrate</Link>
                         </span>
                         <button type="submit">Iniciar Sesión</button>
