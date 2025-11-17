@@ -3,53 +3,100 @@ import { useForm } from "../hooks/useForm";
 import { data, Link, useNavigate } from "react-router-dom";
 
 
-const Login = () => {
-    //desestructuramos lo que viene de useForm para utilizarlo
+export const handleLogin = ({ onLogin }) => {
     const { formState, handleChange } = useForm({
-        username: "",
-        password: ""
-    })
+        username: '',
+        password: ''
+    });
 
-    useEffect(() => {
-        console.log(formState)
-    }, [formState])
+    // Estado para manejar la carga y errores
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
-    const navigate = useNavigate()
+    const handleSubmit = async (e) => {    //ESTO SOLO DE REFERENCIA 
+         e.preventDefault();
+         setError(null);
+         //validaciones 
+         if (!formValues.username || !formValues.password) {
+             setError("Todos los campos son obligatorios");
+             return;
+         }
 
-
-    const handleLogin = async (event) => {
-        event.preventDefault()
-
+        setLoading(true);
         try {
+            // primer fetch: para guardar la cookie
+            const response = await fetch("http://localhost:3000/api/login", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(formValues)
+            });
 
-            const peticion = await fetch("http://localhost:3000/api/login", {
-                //SIEMPRE RECORDAR, method, headers, credentials
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify(formState)
-            })
-            
-            const data = await peticion.json()
-            if (!peticion.ok) {
-                alert(data.message)
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Error al iniciar sesión");
             }
-            alert(data.message)
-            navigate("/home")
 
+            // segundo fetch: pedir los datos del perfil para asegurarnos de q la cookie funcione
+            const profileResponse = await fetch("http://localhost:3000/api/profile", {
+                credentials: "include",
+            });
+            if (!profileResponse.ok) {
+                throw new Error("Login exitoso, pero no se pudo obtener el perfil.");
+            }
+
+            const profileData = await profileResponse.json();
+
+            onLogin(profileData.user);
+
+            navigate('/home');
 
         } catch (error) {
-            <p>error en el fetch de login</p>
-            console.log(error)
+            console.error(error);
+            setError(error.message);
+            setLoading(false);
         }
+    };
+
+    if (isLoading) {
+        return <Loading />;
     }
 
     // const handleLogin = (event) => {
     //     event.preventDefault()
 
     //     navigate("/home")
+    // }
+
+
+    //     const handleLogin = async (event) => {
+    //     event.preventDefault()
+
+    //     try {
+    //         const peticion = await fetch("http://localhost:3000/api/login", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify(formState),
+    //             credentials: "include"
+    //         })
+
+            
+    //         if (!formState.username || !formState.email || !formState.password || !formState.name || !formState.lastname) {
+    //             return alert("no puedes enviar campos vacios")
+    //         }
+    //         if (peticion.ok) {
+    //             console.log("todo okey")
+    //             console.log(formState)
+    //             navigate("/login")
+    //         } else {
+    //             console.error()
+    //         }
+    //     } catch (error) {
+    //         console.error();
+    //     }
     // }
 
 
@@ -81,7 +128,6 @@ const Login = () => {
             </div >
         </main>
     )
-
 }
 
 export default Login
