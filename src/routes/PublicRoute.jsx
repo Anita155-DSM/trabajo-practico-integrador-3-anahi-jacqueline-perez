@@ -1,12 +1,38 @@
-// ● Mostrar logo o nombre de la aplicación
-// ● Si el usuario está autenticado, mostrar enlaces a: Home, Tasks, Profile
-// ● Si el usuario está autenticado, mostrar botón de Logout
-import { useNavigate, Outlet, Navigate } from "react-router-dom";
-import React from "react";
+// Si el usuario YA está autenticado, redireccionar a Home
+import { Outlet, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Loading } from "../components/Loading";
 
 export const PublicRoute = () => {
-    //aca debo hacer la logica de ver si está logeado
-    const isLogged = localStorage.getItem("token")
+    const [isLoading, setIsLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    return !isLogged ? <Outlet /> : <Navigate to="/home" />;
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const response = await fetch("http://localhost:3000/api/profile", {
+                    credentials: "include"
+                });
+                
+                if (response.ok) {
+                    setIsAuthenticated(true);
+                } else {
+                    setIsAuthenticated(false);
+                }
+            } catch (error) {
+                console.error("Error verificando autenticación:", error);
+                setIsAuthenticated(false);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        checkAuth();
+    }, []);
+
+    if (isLoading) {
+        return <Loading />;
+    }
+
+    return !isAuthenticated ? <Outlet /> : <Navigate to="/home" />;
 }

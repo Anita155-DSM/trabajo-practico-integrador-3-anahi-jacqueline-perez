@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "../hooks/useForm";
 import { Link, useNavigate } from "react-router-dom";
+import { Loading } from "../components/Loading";
 // ○ username
 // ○ email
 // ○ password
@@ -8,6 +9,9 @@ import { Link, useNavigate } from "react-router-dom";
 // ○ lastname
 // ○ dni
 const Register = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    
     //desestructuramos lo que viene de useForm para utilizarlo
     const { formState, handleChange } = useForm({
         username: "",
@@ -29,8 +33,15 @@ const Register = () => {
     // }
 
     const handleRegister = async (event) => {
-        event.preventDefault()
+        event.preventDefault();
+        setError(null);
 
+        // Validaciones ANTES de enviar
+        if (!formState.username || !formState.email || !formState.password || !formState.name || !formState.lastname) {
+            return alert("Todos los campos son obligatorios");
+        }
+
+        setIsLoading(true);
         try {
             const peticion = await fetch("http://localhost:3000/api/register", {
                 method: "POST",
@@ -39,24 +50,27 @@ const Register = () => {
                 },
                 body: JSON.stringify(formState),
                 credentials: "include"
-            })
+            });
 
+            if (!peticion.ok) {
+                const errorData = await peticion.json();
+                throw new Error(errorData.message || "Error al registrarse");
+            }
             
-            if (!formState.username || !formState.email || !formState.password || !formState.name || !formState.lastname) {
-                return alert("no puedes enviar campos vacios")
-            }
-            if (peticion.ok) {
-                console.log("todo okey")
-                console.log(formState)
-                navigate("/login")
-            } else {
-                console.error()
-            }
+            console.log("Registro exitoso");
+            setIsLoading(false);
+            navigate("/home");
         } catch (error) {
-            console.error();
+            console.error("Error en registro:", error);
+            setError(error.message);
+            setIsLoading(false);
         }
     }
 
+
+    if (isLoading) {
+        return <Loading />;
+    }
 
     return (
         <main>
@@ -64,28 +78,33 @@ const Register = () => {
                 <h3>
                     ¡Registrate!
                 </h3>
+                {error && (
+                    <div style={{ color: "red", padding: "10px", marginBottom: "10px" }}>
+                        {error}
+                    </div>
+                )}
                 <div>
                     <form onSubmit={handleRegister}>
                         <div>
                             <label htmlFor="username">username</label>
-                            <input type="text" name="username" value={formState.username} onChange={handleChange} />
+                            <input type="text" name="username" value={formState.username} onChange={handleChange} required />
                         </div>
 
                         <div>
                             <label htmlFor="password">password</label>
-                            <input type="text" name="password" value={formState.password} onChange={handleChange} />
+                            <input type="password" name="password" value={formState.password} onChange={handleChange} required />
                         </div>
                         <div>
                             <label htmlFor="email">email</label>
-                            <input type="text" name="email" value={formState.email} onChange={handleChange} />
+                            <input type="email" name="email" value={formState.email} onChange={handleChange} required />
                         </div>
                         <div>
                             <label htmlFor="name">first name</label>
-                            <input type="text" name="name" value={formState.firstName} onChange={handleChange} />
+                            <input type="text" name="name" value={formState.name} onChange={handleChange} required />
                         </div>
                         <div>
                             <label htmlFor="lastname">last name</label>
-                            <input type="text" name="lastname" value={formState.lastName} onChange={handleChange} />
+                            <input type="text" name="lastname" value={formState.lastname} onChange={handleChange} required />
                         </div>
                         {/* el modelo de user en el backend no tiene dni */}
                         <span>

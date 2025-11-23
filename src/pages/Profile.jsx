@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "../components/Loading";
 // Ubicación: src/pages/Profile.jsx
 // Requisitos:
 // ● Mostrar información del usuario:
@@ -10,11 +11,12 @@ import { useNavigate } from "react-router-dom";
 // ● Después del logout, redireccionar a /login
 // ● Mostrar componente Loading mientras se cargan los datos
 export const Profile = () => {
+    const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
 
-    const navigate = useNavigate()
     //debemos hacer un get de profile para que nos traiga el profile
-    const getProfile = async (event) => {
-        const [user, setUser] = useState;
+    const getProfile = async () => {
         try {
             const peticion = await fetch("http://localhost:3000/api/profile", {
                 credentials: "include"
@@ -24,12 +26,19 @@ export const Profile = () => {
                 navigate("/home")
             }
             const data = await peticion.json();
-            setUser(data.user)
+            setUser(data.user);
+            setIsLoading(false);
         } catch (error) {
-            console.log(error)
-            navigate("/login")
+            console.log(error);
+            setIsLoading(false);
+            navigate("/login");
         }
     }
+
+    // Llamar getProfile cuando el componente se monta
+    useEffect(() => {
+        getProfile();
+    }, []);
 
     //dbemos hacer un handleLogout para manejar el boton de cerrar sesión en profile
 
@@ -41,6 +50,14 @@ export const Profile = () => {
         if (peticion.ok) {
             navigate("/login")
         }
+    }
+
+    if (isLoading) {
+        return <Loading />;
+    }
+
+    if (!user) {
+        return <div>No se pudo cargar el perfil</div>;
     }
 
     return (
@@ -57,10 +74,10 @@ export const Profile = () => {
                                 <strong>id:</strong> {user.id}
                             </li>
                             <li>
-                                <strong>name</strong> {user.name}
+                                <strong>name:</strong> {user.name}
                             </li>
                             <li>
-                                <strong>lastname</strong> {user.lastname}
+                                <strong>lastname:</strong> {user.lastname}
                             </li>
                         </ul>
                         <button onClick={handleLogout}>Logout</button>

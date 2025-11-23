@@ -8,8 +8,6 @@ import { PrivateRoute } from "./PrivateRoute";
 import { Home } from "../pages/Home";
 import { Tasks } from "../pages/Tasks";
 import { Profile } from "../pages/Profile";
-import { TaskCreate } from "../pages/TaskCreate";
-import { TaskEdit } from "../pages/TaskEdit";
 import { Navbar } from "../components/navbar";
 import { Footer } from "../components/Footer";
 
@@ -24,11 +22,8 @@ export const AppRouter = () =>{
                 <Route path="/register" element={<Register/>}></Route>
             </Route>
             <Route element={<PrivateRoute />}>
-
                 <Route path="/home" element={<Home/>}></Route>
                 <Route path="/tasks" element={<Tasks/>}></Route>
-                <Route path="/tasks/create" element={<TaskCreate />} />
-                <Route path="/tasks/edit" element={<TaskEdit />} />
                 <Route path="/profile" element={<Profile/>}></Route>
             </Route>
             {/* ruta por default */}

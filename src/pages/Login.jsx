@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "../hooks/useForm";
-import { data, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Loading } from "../components/Loading";
 
 
-export const handleLogin = ({ onLogin }) => {
+export const Login = () => {
     const { formState, handleChange } = useForm({
         username: '',
         password: ''
@@ -15,43 +16,40 @@ export const handleLogin = ({ onLogin }) => {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {    //ESTO SOLO DE REFERENCIA 
-         e.preventDefault();
-         setError(null);
-         //validaciones 
-         if (!formValues.username || !formValues.password) {
-             setError("Todos los campos son obligatorios");
-             return;
-         }
+        e.preventDefault();
+        setError(null);
+        //validaciones 
+        if (!formState.username || !formState.password) {
+            return alert("Todos los campos son obligatorios");
+        }
 
         setLoading(true);
         try {
-            // primer fetch: para guardar la cookie
+            // primer fetch: para guardar la cookie de login 
             const response = await fetch("http://localhost:3000/api/login", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify(formValues)
+                body: JSON.stringify(formState)
             });
-
+            //si la respuesta no es correcta
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || "Error al iniciar sesión");
             }
-
+            // si es correcto, paso dos
             // segundo fetch: pedir los datos del perfil para asegurarnos de q la cookie funcione
             const profileResponse = await fetch("http://localhost:3000/api/profile", {
                 credentials: "include",
-            });
+            });//si no se puede cargar profile
             if (!profileResponse.ok) {
                 throw new Error("Login exitoso, pero no se pudo obtener el perfil.");
             }
-
+            
             const profileData = await profileResponse.json();
-
-            onLogin(profileData.user);
-
-            navigate('/home');
-
+            console.log(profileData);
+            setLoading(false);
+            navigate("/home");
         } catch (error) {
             console.error(error);
             setError(error.message);
@@ -63,43 +61,6 @@ export const handleLogin = ({ onLogin }) => {
         return <Loading />;
     }
 
-    // const handleLogin = (event) => {
-    //     event.preventDefault()
-
-    //     navigate("/home")
-    // }
-
-
-    //     const handleLogin = async (event) => {
-    //     event.preventDefault()
-
-    //     try {
-    //         const peticion = await fetch("http://localhost:3000/api/login", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json"
-    //             },
-    //             body: JSON.stringify(formState),
-    //             credentials: "include"
-    //         })
-
-            
-    //         if (!formState.username || !formState.email || !formState.password || !formState.name || !formState.lastname) {
-    //             return alert("no puedes enviar campos vacios")
-    //         }
-    //         if (peticion.ok) {
-    //             console.log("todo okey")
-    //             console.log(formState)
-    //             navigate("/login")
-    //         } else {
-    //             console.error()
-    //         }
-    //     } catch (error) {
-    //         console.error();
-    //     }
-    // }
-
-
     return (
         <main>
             <div>
@@ -107,7 +68,7 @@ export const handleLogin = ({ onLogin }) => {
                     <h3>
                         ¡Iniciar sesión!
                     </h3>
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="username">username</label>
                             <input type="text" name="username" value={formState.username} onChange={handleChange} />
