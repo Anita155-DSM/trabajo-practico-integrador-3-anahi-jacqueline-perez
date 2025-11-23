@@ -2,26 +2,39 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 export const Navbar = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    const isLogged = () =>{ 
-        
-    }
-    
+    //logica de logout
+    const handleLogout = async () => {
+        try {
+            const peticion = await fetch("http://localhost:3000/api/logout", {
+                method: "POST",
+                credentials: "include"
+            });
+            
+            if (peticion.ok) {
+                navigate("/login");
+            }
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+        }
+    };
+
     return (
         <nav>
             <div>
-                <Link to="/home">home</Link>
+                <Link to="/home">Home</Link>
             </div>
             <div>
-                <Link to="/profile">profile</Link>
+                <Link to="/profile">Profile</Link>
             </div>
             <div>
-                <Link to="/tasks">tasks</Link>
+                <Link to="/tasks">Tasks</Link>
             </div>
+            {/* botón de logout */}
             <div>
-                <Link to="/login">logout</Link>
+                <button onClick={handleLogout}>Logout</button>
             </div>
         </nav>
-    )
+    );
 }
