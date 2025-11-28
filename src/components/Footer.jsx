@@ -5,8 +5,10 @@ import React from 'react';
 
 export const Footer = () => {
     return (
-        <footer>
-            <p>© TLP-integrador. 2025 Perez Anahi Jacqueline. </p>
+        <footer className="bg-light text-center py-3 mt-auto">
+            <div className="container">
+                <p className="mb-0">© TLP-integrador. 2025 Perez Anahi Jacqueline.</p>
+            </div>
         </footer>
     )
 }

@@ -43,12 +43,19 @@ export const Profile = () => {
     //dbemos hacer un handleLogout para manejar el boton de cerrar sesión en profile
 
     const handleLogout = async () => {
-        const peticion = await fetch("http://localhost:3000/api/logout", {
-            method: "POST",
-            credentials: "include"
-        })
-        if (peticion.ok) {
-            navigate("/login")
+        try {
+            const peticion = await fetch("http://localhost:3000/api/logout", {
+                method: "POST",
+                credentials: "include"
+            });
+
+            if (peticion.ok) {
+                navigate("/login");
+            } else {
+                console.error("Logout falló en el servidor");
+            }
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
         }
     }
 
@@ -61,26 +68,43 @@ export const Profile = () => {
     }
 
     return (
-        <main>
-            <div>
-                <div>
-                    <h1>profile</h1>
-                </div>
-                <div>
-                    <div>
-                        <h3>info del usuario</h3>
-                        <ul>
-                            <li>
-                                <strong>id:</strong> {user.id}
-                            </li>
-                            <li>
-                                <strong>name:</strong> {user.name}
-                            </li>
-                            <li>
-                                <strong>lastname:</strong> {user.lastname}
-                            </li>
-                        </ul>
-                        <button onClick={handleLogout}>Logout</button>
+        <main className="container mt-5">
+            <div className="row justify-content-center">
+                <div className="col-12 col-md-6">
+                    <div className="card shadow-sm">
+                        <div className="card-body">
+                            <div className="text-center mb-4">
+                                <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: 80, height: 80, fontSize: 32 }}>
+                                    <i className="bi bi-person-circle"></i>
+                                </div>
+                                <h3 className="mb-0">{user.name} {user.lastname}</h3>
+                                <p className="text-muted">@{user.username || 'usuario'}</p>
+                            </div>
+
+                            <div className="mb-4">
+                                <h5 className="border-bottom pb-2 mb-3">Información del usuario</h5>
+                                <div className="mb-2">
+                                    <strong>ID:</strong> <span className="text-muted">{user.id}</span>
+                                </div>
+                                <div className="mb-2">
+                                    <strong>Nombre:</strong> <span className="text-muted">{user.name}</span>
+                                </div>
+                                <div className="mb-2">
+                                    <strong>Apellido:</strong> <span className="text-muted">{user.lastname}</span>
+                                </div>
+                                {user.email && (
+                                    <div className="mb-2">
+                                        <strong>Email:</strong> <span className="text-muted">{user.email}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="d-grid">
+                                <button className="btn btn-outline-danger" onClick={handleLogout}>
+                                    <i className="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

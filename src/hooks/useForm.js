@@ -9,56 +9,82 @@
 
 import React, { useState } from "react";
 
-// useForm tiene como parametro inicial: initialState
-export const useForm = (initialState = {}) => {
-    const [formState, setFormState] = useState(initialState)
-    //const { username, password } = formState  // este np es necesario porq no lo estamos usando ahorita
+/*
+    useForm: hook reutilizable para manejar formularios.
+    - initialState: objeto con los valores iniciales del formulario
+    - validate (opcional): función (values) => errors   // devuelve objeto con errores por campo
 
-    // ● Función para actualizar valores de inputs al escribir
-    // VALORES de los inputs {target} viene del objeto event y aca con llaves, tomamos solo target, que es el input sobre el cual estamos escribiendo
-    const handleChange = ({target}) => {
-        const {name, value} = target
-        // del target vienen name y value(o sea del input)
-        
-        // aca solo actualizamos los valores que editamos del formState
-        setFormState({
-            ...formState,
-            //puede venir cualquiera de los input, y cambiar su valor
-            [name]: value
-        })
+    Retorna:
+    - formState: valores actuales
+    - errors: objeto con errores de validación
+    - isSubmitting: boolean
+    - handleChange(event): actualizar campo
+    - handleReset(): volver al estado inicial
+    - handleSubmit(onSubmit): devuelve una función que puede usarse como onSubmit del form
 
-    }
-    // ● Función para resetear el formulario a valores iniciales
-    //vuelve el formulario al estado inicial (o sea a nada)
+    Nota: handleSubmit recibe una función async (onSubmit) que ejecuta la petición.
+    El hook se encarga de validación previa y del estado de envío.
+*/
+export const useForm = (initialState = {}, validate = null) => {
+    const [formState, setFormState] = useState(initialState);
+    const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Actualiza valores del formulario. Funciona para inputs normales y checkbox.
+    const handleChange = (event) => {
+        const { target } = event;
+        const { name, type } = target;
+        const value = type === "checkbox" ? target.checked : target.value;
+
+        setFormState((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    // Resetea el formulario a los valores iniciales y limpia errores.
     const handleReset = () => {
-        //los cambios van al setFormState porq es el que capta los valores cambiantes
-        setFormState(initialState)
-    }   
-    //el handleSubmit recibe un event del formulario. sirve para enviar los datos
-    const handleSubmit = (event) => {
-        event.preventDefault()
+        setFormState(initialState);
+        setErrors({});
+    };
 
-        try {
-            
-        } catch (error) {
-            
-        }
-        // onLogin(formState)
-        //evita que la pagina se recargue
-        handleReset()
+    // Devuelve un handler para el submit del formulario.
+    // Uso: <form onSubmit={handleSubmit(async (values) => { ... })}>
+    const handleSubmit = (onSubmit) => {
+        return async (event) => {
+            if (event && event.preventDefault) event.preventDefault();
 
-        console.log(formState)
+            // Validación opcional
+            if (typeof validate === "function") {
+                const validationErrors = validate(formState) || {};
+                setErrors(validationErrors);
+                if (Object.keys(validationErrors).length > 0) {
+                    // Si hay errores, no ejecutamos la petición
+                    return;
+                }
+            }
 
-    }
+            setIsSubmitting(true);
+            try {
+                if (typeof onSubmit === "function") {
+                    await onSubmit(formState);
+                }
+            } catch (err) {
+                // Propagamos el error para que el componente lo maneje si quiere
+                throw err;
+            } finally {
+                setIsSubmitting(false);
+            }
+        };
+    };
 
-    //siempre va un return, no olvidar, en el caso de los customHooks retornan funciones, ej: handleReset
-    // ● Retornar el estado actual del formulario y las funciones de manejo
     return {
-        ...formState,
         formState,
+        errors,
+        isSubmitting,
         handleChange,
         handleReset,
-        handleSubmit
-    }
-}
+        handleSubmit,
+    };
+};
 

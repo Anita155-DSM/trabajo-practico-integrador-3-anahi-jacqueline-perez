@@ -3,92 +3,94 @@ import { useForm } from "../hooks/useForm";
 import { Link, useNavigate } from "react-router-dom";
 import { Loading } from "../components/Loading";
 
-
 export const Login = () => {
-    const { formState, handleChange } = useForm({
-        username: '',
-        password: ''
-    });
+    // Validación simple: campos obligatorios
+    const validate = (values) => {
+        const errors = {};
+        if (!values.username) errors.username = "El usuario es obligatorio";
+        if (!values.password) errors.password = "La contraseña es obligatoria";
+        return errors;
+    };
 
-    // Estado para manejar la carga y errores
-    const [isLoading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const { formState, handleChange, handleReset, handleSubmit, errors, isSubmitting } = useForm(
+        {
+            username: "",
+            password: "",
+        },
+        validate
+    );
+
+    const [serverError, setServerError] = useState(null);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {    //ESTO SOLO DE REFERENCIA 
-        e.preventDefault();
-        setError(null);
-        //validaciones 
-        if (!formState.username || !formState.password) {
-            return alert("Todos los campos son obligatorios");
-        }
-
-        setLoading(true);
+    // onSubmit que pasamos al hook
+    const onSubmit = async (values) => {
+        setServerError(null);
         try {
-            // primer fetch: para guardar la cookie de login 
             const response = await fetch("http://localhost:3000/api/login", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify(formState)
-            });
-            //si la respuesta no es correcta
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Error al iniciar sesión");
-            }
-            // si es correcto, paso dos
-            // segundo fetch: pedir los datos del perfil para asegurarnos de q la cookie funcione
-            const profileResponse = await fetch("http://localhost:3000/api/profile", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 credentials: "include",
-            });//si no se puede cargar profile
-            if (!profileResponse.ok) {
-                throw new Error("Login exitoso, pero no se pudo obtener el perfil.");
+                body: JSON.stringify(values),
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.message || "Error al iniciar sesión");
             }
-            
-            const profileData = await profileResponse.json();
-            console.log(profileData);
-            setLoading(false);
+
+            // Verificamos el perfil para asegurarnos de que la cookie de sesión esté activa
+            const profileRes = await fetch("http://localhost:3000/api/profile", {
+                credentials: "include",
+            });
+            if (!profileRes.ok) throw new Error("No se pudo obtener el perfil después del login");
+
             navigate("/home");
-        } catch (error) {
-            console.error(error);
-            setError(error.message);
-            setLoading(false);
+            handleReset();
+        } catch (err) {
+            setServerError(err.message || "Error en inicio de sesión");
         }
     };
 
-    if (isLoading) {
-        return <Loading />;
-    }
+    if (isSubmitting) return <Loading />;
 
-    return (
-        <main>
-            <div>
-                <div>
-                    <h3>
-                        ¡Iniciar sesión!
-                    </h3>
-                    <form onSubmit={handleSubmit}>
-                        <div>
-                            <label htmlFor="username">username</label>
-                            <input type="text" name="username" value={formState.username} onChange={handleChange} />
+            return (
+                <main>
+                    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '75vh' }}>
+                        <div className="w-100" style={{ maxWidth: 480, padding: '0 16px' }}>
+                            <div className="card shadow-sm">
+                                <div className="card-body">
+                                    <h3 className="card-title mb-3 text-center">¡Iniciar sesión!</h3>
+                                    {serverError && <div className="alert alert-danger">{serverError}</div>}
+                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                        <div className="mb-3">
+                                            <label htmlFor="username" className="form-label">usuario</label>
+                                            <input className="form-control" type="text" name="username" value={formState.username} onChange={handleChange} />
+                                            {errors.username && <div className="form-text text-danger">{errors.username}</div>}
+                                        </div>
+
+                                        <div className="mb-3">
+                                            <label htmlFor="password" className="form-label">contraseña</label>
+                                            <input className="form-control" type="password" name="password" value={formState.password} onChange={handleChange} />
+                                            {errors.password && <div className="form-text text-danger">{errors.password}</div>}
+                                        </div>
+
+                                        <div className="mb-3 text-center">
+                                            <p className="mb-0">¿no tienes una cuenta? <Link to="/register">Regístrate</Link></p>
+                                        </div>
+
+                                        <div className="d-grid">
+                                            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                                                Iniciar Sesión
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label htmlFor="password">password</label>
-                            <input type="text" name="password" value={formState.password} onChange={handleChange} />
-                        </div>
+                    </div>
+                </main>
+            );
+};
 
-                        <span>
-                            <p>¿no tienes una cuenta?</p>
-                            <Link to="/register"> Registrate</Link>
-                        </span>
-                        <button type="submit">Iniciar Sesión</button>
-                    </form>
-
-                </div>
-            </div >
-        </main>
-    )
-}
-
-export default Login
+export default Login;

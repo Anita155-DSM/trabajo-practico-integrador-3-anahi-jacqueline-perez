@@ -35,7 +35,8 @@ export const Home = () => {
                 });
                 if (tasksResponse.ok) {
                     const tasksData = await tasksResponse.json();
-                    setTasks(tasksData.tasks || []);
+                    // El backend devuelve directamente el array
+                    setTasks(Array.isArray(tasksData) ? tasksData : (tasksData.tasks || []));
                 }
             } catch (error) {
                 console.error("Error cargando datos:", error);
@@ -57,34 +58,41 @@ export const Home = () => {
     const pendingTasks = totalTasks - completedTasks;
 
     return (
-        <main>
-            <div>
-                <h1>¡Bienvenido, {user?.name || "Usuario"}!</h1>
-                <p>Gestiona tus tareas de manera eficiente</p>
+        <main className="container mt-4">
+            <div className="mb-4">
+                <h1 className="h3">¡Bienvenido, {user?.name || "Usuario"}!</h1>
+                <p className="text-muted">Gestiona tus tareas de manera eficiente</p>
             </div>
 
-            <div>
-                <h2>Resumen de Tareas</h2>
-                <div>
-                    <div>
-                        <h3>Total de Tareas</h3>
-                        <p>{totalTasks}</p>
+            <div className="row mb-4">
+                <div className="col-12 col-md-4">
+                    <div className="card text-center">
+                        <div className="card-body">
+                            <h5 className="card-title">Total de Tareas</h5>
+                            <p className="card-text display-6">{totalTasks}</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3>Tareas Completadas</h3>
-                        <p>{completedTasks}</p>
+                </div>
+                <div className="col-12 col-md-4">
+                    <div className="card text-center">
+                        <div className="card-body">
+                            <h5 className="card-title">Tareas Completadas</h5>
+                            <p className="card-text display-6">{completedTasks}</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3>Tareas Pendientes</h3>
-                        <p>{pendingTasks}</p>
+                </div>
+                <div className="col-12 col-md-4">
+                    <div className="card text-center">
+                        <div className="card-body">
+                            <h5 className="card-title">Tareas Pendientes</h5>
+                            <p className="card-text display-6">{pendingTasks}</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div>
-                <Link to="/tasks">
-                    <button>Ver todas mis tareas</button>
-                </Link>
+                <Link to="/tasks" className="btn btn-primary">Ver todas mis tareas</Link>
             </div>
         </main>
     )

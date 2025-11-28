@@ -74,47 +74,53 @@ const Register = () => {
 
     return (
         <main>
-            <div>
-                <h3>
-                    ¡Registrate!
-                </h3>
-                {error && (
-                    <div style={{ color: "red", padding: "10px", marginBottom: "10px" }}>
-                        {error}
-                    </div>
-                )}
-                <div>
-                    <form onSubmit={handleRegister}>
-                        <div>
-                            <label htmlFor="username">username</label>
-                            <input type="text" name="username" value={formState.username} onChange={handleChange} required />
-                        </div>
+            <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '75vh' }}>
+                <div className="w-100" style={{ maxWidth: 520, padding: '0 16px' }}>
+                    <div className="card shadow-sm">
+                        <div className="card-body">
+                            <h3 className="card-title mb-3 text-center">¡Regístrate!</h3>
+                            {error && <div className="alert alert-danger">{error}</div>}
 
-                        <div>
-                            <label htmlFor="password">password</label>
-                            <input type="password" name="password" value={formState.password} onChange={handleChange} required />
+                            <form onSubmit={handleRegister}>
+                                <div className="row">
+                                    <div className="col-12 mb-3">
+                                        <label htmlFor="username" className="form-label">usuario</label>
+                                        <input className="form-control" type="text" name="username" value={formState.username} onChange={handleChange} required />
+                                    </div>
+
+                                    <div className="col-12 mb-3">
+                                        <label htmlFor="email" className="form-label">email</label>
+                                        <input className="form-control" type="email" name="email" value={formState.email} onChange={handleChange} required />
+                                    </div>
+
+                                    <div className="col-12 mb-3">
+                                        <label htmlFor="password" className="form-label">contraseña</label>
+                                        <input className="form-control" type="password" name="password" value={formState.password} onChange={handleChange} required />
+                                    </div>
+
+                                    <div className="col-md-6 mb-3">
+                                        <label htmlFor="name" className="form-label">nombre</label>
+                                        <input className="form-control" type="text" name="name" value={formState.name} onChange={handleChange} required />
+                                    </div>
+
+                                    <div className="col-md-6 mb-3">
+                                        <label htmlFor="lastname" className="form-label">apellido</label>
+                                        <input className="form-control" type="text" name="lastname" value={formState.lastname} onChange={handleChange} required />
+                                    </div>
+                                </div>
+
+                                <div className="mb-3 text-center">
+                                    <p className="mb-0">¿ya tienes una cuenta? <Link to="/login">Inicia sesión</Link></p>
+                                </div>
+
+                                <div className="d-grid">
+                                    <button type="submit" className="btn btn-primary">Regístrate</button>
+                                </div>
+                            </form>
                         </div>
-                        <div>
-                            <label htmlFor="email">email</label>
-                            <input type="email" name="email" value={formState.email} onChange={handleChange} required />
-                        </div>
-                        <div>
-                            <label htmlFor="name">first name</label>
-                            <input type="text" name="name" value={formState.name} onChange={handleChange} required />
-                        </div>
-                        <div>
-                            <label htmlFor="lastname">last name</label>
-                            <input type="text" name="lastname" value={formState.lastname} onChange={handleChange} required />
-                        </div>
-                        {/* el modelo de user en el backend no tiene dni */}
-                        <span>
-                            <p>¿ya tienes una cuenta?</p>
-                            <Link to="/login"> Inicia Sesion</Link>
-                        </span>
-                        <button type="submit">Registrate</button>
-                    </form>
+                    </div>
                 </div>
-            </div >
+            </div>
         </main>
     )
 }

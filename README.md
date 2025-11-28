@@ -10,36 +10,51 @@ Aplicación web completa para gestión de tareas con autenticación de usuarios,
 git clone <url-mi repositorio(perez-anahi-jacqueline)>
 cd tlp-app
 
-# Instalar backend
-cd server
-npm install
+````markdown
+# TLP App - Gestión de Tareas
 
-# Instalar frontend  
-cd trabajo-practico-integrador-III/src
-npm install
-```
+Proyecto de práctica integradora: frontend en React que consume un backend ya implementado y expone autenticación y CRUD de tareas.
 
-Backend (/server/.env.example reemplazar por .env)
-```bash
-#env dado por el profe
-DB_NAME=tp_integrador
-DB_USER=root
-DB_PASSWORD=
-DB_HOST=localhost
-DB_DIALECT=mysql
-DB_PORT=3307
-JWT_SECRET=jwt_secret
-PORT=3000
-```
+Descripción breve
+------------------
+Aplicación sencilla para registrar/entrar con usuario, ver perfil y gestionar tareas (crear, editar, eliminar, marcar como completadas). El frontend fue desarrollado con React (Vite).
 
-Ejecución
+Instalación (frontend)
+-----------------------
+1. Clona el repositorio y entra en la carpeta del proyecto:
 
 ```bash
-# Backend (puerto 3000)
-cd server
-npm run dev
+git clone <URL_DEL_REPOSITORIO>
+cd trabajo-practico-integrador-3-anahi-jacqueline-perez
+```
 
-# Frontend (puerto 5173)  
-cd client
+2. Instala dependencias del frontend:
+
+```powershell
+npm install
+```
+
+3. Ejecuta la aplicación (por defecto Vite en 5173):
+
+```powershell
 npm run dev
 ```
+
+Backend
+-------
+El backend ya fue provisto por la cátedra (ver carpeta `servidor/`). Para levantarlo sigue las instrucciones del backend (archivo `servidor/README` o `servidor/.env.example`). Asegúrate de copiar `.env.example` a `.env` y completar los datos.
+
+Puntos importantes
+------------------
+- Todas las peticiones al backend usan `credentials: 'include'` para trabajar con cookies de sesión.
+- Si tienes problemas con CORS o cookies, verifica la configuración del backend y que el puerto del frontend (Vite) esté permitido.
+
+Variables de entorno
+--------------------
+Si necesitas añadir variables locales, crea un archivo `.env.local` en la raíz y agrégalo (está ignorado por git).
+
+Contacto
+--------
+Alumno: Anahí Jacqueline Pérez
+
+````
